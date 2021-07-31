@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Front End</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark py-5" aria-label="Third navbar example">
+            <div class="container">
+                <a class="navbar-brand" href="#">PATIENT</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarsExample03">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                    </ul>
+                    <form>
+                        <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="my-5 text-center container">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Add New Patient
+            </button>
+            <!-- Add Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add New Patient</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="first_name" placeholder="First name"
+                                            aria-label="First name">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="last_name" placeholder="Last name"
+                                            aria-label="Last name">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <input type="email" class="form-control" id="email" placeholder="Email Address">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="phone_number"
+                                            placeholder="Phone Number">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary btn-submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="row_content"></tbody>
+            </table>
+        </div>
+    </main>
+    <footer class="bg-dark text-light d-flex justify-content-center align-items-center py-5">
+        &copy; 2020 aemooooon
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script>
+        // fetch all
+        const fetchAll = async (url) => {
+            let rc = document.querySelector(".row_content");
+            const response = await fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let content = "";
+                    data.data.map(item => {
+                        content += `<tr>
+                    <td>${item[0]}</td>
+                    <td>${item[1]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[3]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal">
+                            Edit
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Patient</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <input type="hidden" id="edit_patient_id" value="${item[0]}" />
+                                            <div class="row mb-3">
+                                                <div class="col">
+                                                    <input type="text" id="edit_first_name" class="form-control" placeholder="First name"
+                                                        aria-label="First name" value="${item[1]}">
+                                                </div>
+                                                <div class="col">
+                                                    <input type="text" id="edit_last_name" class="form-control" placeholder="Last name" aria-label="Last name" value="${item[2]}">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col">
+                                                    <input type="email" id="edit_email" class="form-control" id="inputEmail3" placeholder="Email Address" value="${item[3]}">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col">
+                                                    <input type="text" id="edit_phone_number" class="form-control" id="inputPassword3" placeholder="Phone Number" value="${item[4]}">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary btn_edit">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger btn-delete" data-delete="${item[0]}">Delete</button>
+                    </td></tr>
+                    `
+                    })
+                    rc.innerHTML = content;
+                })
+        }
+
+        // Delete By Id
+        const deleteById = async () => {
+            await fetchAll('http://localhost:8000/patients');
+
+            const btnDelete = document.querySelectorAll(".btn-delete")
+            btnDelete.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    let id = e.target.getAttribute("data-delete");
+
+                    fetch(`http://localhost:8000/patient/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-type': 'application/json'
+                        }
+                    }).then(res=>res.json())
+                    .then(data=>{
+                        console.log(data)
+                        window.location.reload();
+                    })
+                })
+            })
+        }
+
+        deleteById()
+
+
+
+        // Add
+        document.querySelector(".btn-submit").addEventListener('click', () => {
+            const first_name = document.getElementById("first_name").value;
+            const last_name = document.getElementById("last_name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone_number").value;
+            const data_json = {
+                first_name,
+                last_name,
+                email,
+                phone
+            }
+
+            fetch('http://localhost:8000/patients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data_json),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        })
+
+    </script>
+</body>
+
+</html>
